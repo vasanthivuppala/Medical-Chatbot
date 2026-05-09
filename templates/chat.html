@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Chatbot</title>
+
+    <!-- CSS Connection -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='chat.css') }}">
+</head>
+
+<body>
+
+    <div class="chat-container">
+
+        <div class="chat-header">
+            <h2>🩺 Medical Chatbot</h2>
+        </div>
+
+        <div class="chat-box">
+
+            <div class="bot-message">
+                Hello! How can I help you today?
+            </div>
+
+            <div class="user-message">
+                I have fever and headache.
+            </div>
+
+        </div>
+
+       <div class="input-area">
+
+    <input type="text" id="msg" placeholder="Ask your medical question...">
+
+    <button onclick="sendMessage()">
+        Send
+    </button>
+
+</div>
+
+    </div>
+    <script>
+
+async function sendMessage() {
+
+    let userInput = document.getElementById("msg").value;
+
+    let response = await fetch("/get", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: "msg=" + encodeURIComponent(userInput)
+    });
+
+    let data = await response.text();
+
+    let chatBox = document.querySelector(".chat-box");
+
+    chatBox.innerHTML += `
+        <div class="user-message">
+            ${userInput}
+        </div>
+    `;
+
+    chatBox.innerHTML += `
+        <div class="bot-message">
+            ${data}
+        </div>
+    `;
+
+    document.getElementById("msg").value = "";
+}
+
+</script>
+
+</body>
+</html>
